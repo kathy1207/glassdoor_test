@@ -1,17 +1,24 @@
 pipeline {
     agent any
-
-    triggers {
-        cron('H * * * *')
-    }
-
     stages {
+        stage('Checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '<credentials_id>', url: '<repository_url>']]])
+            }
+        }
         stage('Build') {
             steps {
-                sh '''
-                    # Print environment variables
-                    printenv
-                '''
+                sh 'make build'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'make test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'make deploy'
             }
         }
     }
