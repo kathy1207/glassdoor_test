@@ -1,10 +1,18 @@
 pipeline {
-  agent any
-  stages {
-    stage('hello') {
-      steps {
-        sh 'echo "Hello World"'
-      }
+    agent any
+
+    triggers {
+        cron('H * * * *')
     }
-  }
+
+    stages {
+        stage('Build') {
+            steps {
+                sh '''
+                    # Print environment variables
+                    printenv
+                '''
+            }
+        }
+    }
 }
